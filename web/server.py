@@ -8,32 +8,27 @@ db = connector.Manager()
 engine = db.createEngine()
 
 app = Flask(__name__)
-@app.route('/espar/<numero>')
-def espar(numero):
-    num = int(numero)
-    if num%2 ==0:
-        return "Es par"
+@app.route('/palindrome/<palabra>')
+def palindrome(palabra):
+    i =int(len(palabra)/2)
+    condition = 1
+    for x in range(0,i):
+        if palabra[x]!=palabra[len(palabra)-1-x]:
+            condition = 0
+    if condition ==1:
+        return ("Es palindromo")
     else:
-        return "Es impar"
-@app.route('/esprimo/<numero>')
-def esprimo(numero):
-    num = int(numero)
-    condicion  = 0
-    if num<0:
-        return "El numero no es positivo, prueba con otro"
-    if num==1:
-        condicion=2
-    for i in range(2,num):
-        if num%i == 0:
-            condicion = 1
-    if num==0:
-        condicion = 1
-    if condicion==1:
-        return "El numero no es primo"
-    elif condicion ==2:
-        return "El numero no es primo ni compuesto"
+        return ("No es palindromo")
+@app.route('/multiplo/<numero1>/<numero2>')
+def esmultiplo(numero1,numero2):
+    num1 = int(numero1)
+    num2 = int(numero2)
+    if num1 % num2 ==0:
+        final = numero1 + " es multiplo de " + numero2
+        return (final)
     else:
-        return "El numero es primo"
+        final = numero1 +" no es multiplo de " + numero2
+        return (final)
 
 @app.route('/static/<content>')
 def static_content(content):
