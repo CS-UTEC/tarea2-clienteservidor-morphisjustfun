@@ -9,6 +9,37 @@ engine = db.createEngine()
 
 app = Flask(__name__)
 
+
+@app.route('/sumar/<n1>/<n2>')
+def sumar(n1,n2):
+    return str(int(n1)+int(n2))
+
+@app.route('/sumar_stateful/<n>')
+def sumar_stateful(n):
+    key='suma'
+    if key in session:
+        session[key]+=int(n)
+    else:
+        session[key] = int(n)
+    return str(session[key])
+
+
+@app.route('/login',methods=["POST"])
+def login():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    key = 'logged'
+    if key in session and session[key] == [username,password]:
+        return "already logged" + " " + username
+    db_session = db.getSession(engine)
+    respuesta = db_session.query(entities.User).filter(entities.User.username==username).filter(entities.User.password==password)
+    users = respuesta[:]
+    if len(users) > 0:
+        session[key] = [username,password]
+        return "login successful"
+    return "login failed"
+
+
 @app.route('/palindrome/<palabra>')
 def palindrome(palabra):
     i =int(len(palabra)/2)
